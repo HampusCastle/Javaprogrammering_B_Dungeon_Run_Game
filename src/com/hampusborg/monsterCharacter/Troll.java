@@ -1,24 +1,14 @@
 package com.hampusborg.monsterCharacter;
 
 import com.hampusborg.ColorScheme.IColors;
-import com.hampusborg.combat.Character;
+import com.hampusborg.combat.AMonster;
 
-public class Troll extends Character implements IColors {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Troll extends AMonster implements IColors {
     public Troll() {
-        super(10, 10, 10, 10, 10, 10, 10, 10, 10);
+        super("Troll", 10, 10, 10, 10, 7, 10, 0, 0);
     }
 
-    @Override
-    public int attack() {
-
-        System.out.println("The Troll throws a rock at you!");
-        return 0;
-    }
-
-    @Override
-    public boolean flee() {
-
-        System.out.println("The troll is scared and panics, and runs away from the fight");
-        return false;
-    }
 }

@@ -6,5 +6,4 @@ public interface ICombat {
     boolean flee() throws InterruptedException;
     String getStatus() throws InterruptedException;
 
-
 }

@@ -1,28 +1,17 @@
 package com.hampusborg.monsterCharacter;
 
 import com.hampusborg.ColorScheme.IColors;
-import com.hampusborg.combat.Character;
+import com.hampusborg.combat.AMonster;
 
-public class Kraken extends Character implements IColors {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Kraken extends AMonster implements IColors {
 
 
     public Kraken() {
-        super(10,10, 10, 10, 10, 10, 10, 10, 10 );
+        super("Kraken", 10, 10, 10, 10, 10, 10, 0, 0);
     }
-
-    @Override
-    public int attack() {
-
-        System.out.println("The Kraken is trying to attack you using his long tentacles.");
-        return 0;
-    }
-
-    @Override
-    public boolean flee() {
-
-        System.out.println("The Kraken returns to the deep waters and escapes!");
-        return false;
-    }
-}
+ }
 
 
