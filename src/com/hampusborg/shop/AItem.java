@@ -1,31 +1,32 @@
 package com.hampusborg.shop;
 
+import com.hampusborg.gameLogic.Loot;
+import com.hampusborg.gameLogic.Rarity;
+
 public abstract class AItem {
+    protected String name;
+    protected int power;
+    protected Rarity rarity;
 
-    public static String itemName;
-    public static int itemPrice;
-
-
-    public void setName(String itemName) {
-        this.itemName = itemName;
-    }
-
-    public void setPower(int power) {
-        this.itemPrice = itemPrice;
+    public AItem(String name, int power, Rarity rarity) {
+        this.name = name;
+        this.power = power;
+        this.rarity = rarity;
     }
 
     public String getName() {
-        return itemName;
+        return name;
     }
 
-    public int getPower() {
-        return itemPrice;
+    public int getPower(int floorLevel) {
+        return power + (floorLevel * 2);
     }
 
-    public AItem(String itemName, int itemPrice) {
-        this.itemName = itemName;
-        this.itemPrice = itemPrice;
+    public Rarity getRarity() {
+        return rarity;
     }
 }
+
+
 
 

@@ -14,5 +14,4 @@ public class Wizard extends AHero implements IColors {
     public int calculateDamage() {
         return getBaseDamage() + (this.getIntelligence() * 2 / 4 + 1);
     }
-
 }

@@ -34,22 +34,6 @@ public abstract class ACharacter implements ICombat {
         this.gold = gold;
     }
 
-    public boolean isCriticalStrike() {
-        double damageHigherThan = 50;
-        double randomFactor = damageHigherThan * 1.5;
-        Random r = new Random();
-        int dodgeFactor = r.nextInt(1, (int) randomFactor + this.intelligence);
-        return dodgeFactor > damageHigherThan;
-    }
-
-    public boolean didFlee() {
-        double fleeHigherThan = 50;
-        double randomFactor = fleeHigherThan * 2;
-        Random r = new Random();
-        int fleeFactor = r.nextInt(1, (int) randomFactor + this.agility);
-        return fleeFactor > fleeHigherThan;
-    }
-
     public int calculateDamage() {
         return this.baseDamage + (this.strength * 2 / 4 + 1);
     }
@@ -61,17 +45,38 @@ public abstract class ACharacter implements ICombat {
         int dodgeFactor = r.nextInt(1, (int) randomFactor + this.agility);
         return dodgeFactor > dodgeHigherThan;
     }
-    public boolean takenDamage(int calculateDamage) {
-        this.health -= this.calculateDamage();
+    public boolean takenDamage(int damageReceived) {
+        this.health -= this.damageReceived();
         if (this.health <= 0) {
             this.hasDied = true;
-            System.out.println("Lost his life");
+            System.out.println(this.name + "has lost his life");
         }
-        return true;
+        return hasDied;
     }
     @Override
     public String getStatus() {
             return String.format("Status: [Name: %s, Base Damage: %d, Agility: %d, Health: %d, Intelligence: %d, Strength: %d, Experience: %d, Gold: %d, Level: %d]",
                     this.name, this.baseDamage, this.agility, this.health, this.intelligence, this.strength, this.experience, this.gold, this.level);
         }
+
+    public boolean isCriticalStrike() {
+    double damageHigherThan = 50;
+    double randomFactor = damageHigherThan * 1.5;
+    Random r = new Random();
+    int dodgeFactor = r.nextInt(1, (int) randomFactor + this.intelligence);
+    return dodgeFactor > damageHigherThan;
+}
+
+    public boolean didFlee() {
+        double fleeHigherThan = 50;
+        double randomFactor = fleeHigherThan * 2;
+        Random r = new Random();
+        int fleeFactor = r.nextInt(1, (int) randomFactor + this.agility);
+        return fleeFactor > fleeHigherThan;
     }
+    public boolean isDefeated() {
+        return this.health <= 0;
+    }
+}
+
+

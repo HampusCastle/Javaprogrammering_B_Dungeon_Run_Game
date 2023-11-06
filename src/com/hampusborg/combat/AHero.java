@@ -7,13 +7,13 @@ import com.hampusborg.shop.Shop;
 import java.util.List;
 import java.util.Scanner;
 
-import static com.hampusborg.shop.AItem.itemPrice;
-
 
 public abstract class AHero extends ACharacter implements ICombat {
     private Scanner sc = new Scanner(System.in);
     private int amountOfExp;
     Shop shop = new Shop();
+    private String itemName;
+    private int itemPrice;
 
 
     public AHero(String name, int strength, int agility, int baseDamage, int health, int level, int intelligence, int experience, int gold) {
@@ -100,6 +100,22 @@ public abstract class AHero extends ACharacter implements ICombat {
     public int getLevel() {
         return level;
     }
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public int getItemPrice() {
+        return itemPrice;
+    }
+
+    public void setItemPrice(int itemPrice) {
+        this.itemPrice = itemPrice;
+    }
+
     public void turnIntoFrog() {
         this.strength = 1;
         this.intelligence = 1;
@@ -134,36 +150,46 @@ public abstract class AHero extends ACharacter implements ICombat {
     }
 
     public void viewShop(Shop shop) {
+        System.out.println("These are the available items: ");
         shop.displayAvailableItems();
+    }
+
+public void purchaseItem (Shop shop, int selectedItem) {
+        shop.purchaseItem(this, selectedItem);
+    List<Loot> availableItems = shop.getAvailableItems();
+    if (selectedItem >= 0 && selectedItem < availableItems.size()) {
+        Loot choosenLoot = availableItems.get(selectedItem);
+        itemName = choosenLoot.getName();
+        itemPrice = shop.calculatePrice(choosenLoot);
 
         if (gold >= itemPrice) {
-            shop.addItemToInventory(AItem.itemName);
+            shop.addItemToInventory(itemName);
             subtractGold(itemPrice);
-            System.out.println("Purchased " + AItem.itemName + " for " + itemPrice + " gold.");
+            System.out.println("Purchased " + itemName + " for " + itemPrice + " gold.");
         } else {
-            System.out.println("Unfortunately your funds seems to be inadequate to buy " + AItem.itemName + ".");
+            System.out.println("Unfortunately your funds seems to be inadequate to buy " + itemName + ".");
         }
+    } else {
+        System.out.println("Invalid selection.");
     }
+}
 
     public void subtractGold(int amount) {
-        gold -= amount;
+        if (this.gold >= amount){
+            this.gold -= amount;
+        } else {
+            System.out.println("Insufficient founding for this purchase");
+        }
     }
-        public void purchaseItem(Loot item) {
+    public void addGold(int amount) {
+        this.gold += amount;
+    }
 
-        }
-        public int attack(AMonster monster) {
-        int damageDealt = calculateDamage();
-        monster.takeDamage(damageDealt);
-        return damageDealt;
-        }
     public int attack(List<AMonster> monsters) {
         for (AMonster monster : monsters) {
             int damageDealt = calculateDamage();
-            boolean isFlee = false;
-
-            if (!monster.isDefeated()) {
-                if (!monster.didDodge()) {
-                    if (isCriticalStrike()) {
+            if (!monster.didDodge()) {
+                if (!monster.isCriticalStrike()) {
                         damageDealt *= 2;
                         System.out.println("CRITICAL ! - That was an extraordinary hit, that one must have hurt.");
                     }
@@ -172,11 +198,10 @@ public abstract class AHero extends ACharacter implements ICombat {
                     System.out.println("The monster dodged the attack!");
                 }
                 if (monster.isDefeated()) {
-                    System.out.println("The monster have died!");
+                    System.out.println("The monster have been defeated!");
                     monsters.remove(monster);
                 }
             }
-        }
         System.out.println("An attack is underway!");
         return calculateDamage();
     }

@@ -1,11 +1,14 @@
 package com.hampusborg.shop;
 
-public class Shields extends AItem {
-    public Shields(String name, int power) {
-        super(name, power);
-    }
+import com.hampusborg.gameLogic.Loot;
+import com.hampusborg.gameLogic.Rarity;
 
-    public void ShieldOfGondor() {}
+public class Shields extends AItem {
+    public Shields(String name, int power, Rarity rarity) {
+        super(name, power, rarity);
+    }
+    public void ShieldOfGondor (){
+            System.out.println();}
     public void DoorOfDorin () {}
     public void ShelobsStinger (){}
 }

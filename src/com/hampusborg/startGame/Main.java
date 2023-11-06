@@ -1,8 +1,8 @@
 package com.hampusborg.startGame;
 
 import com.hampusborg.gameLogic.GameLogic;
-import com.hampusborg.monsterCharacter.Balrog;
-import com.hampusborg.monsterCharacter.Kraken;
+import com.hampusborg.monsterCharacter.Ghúl;
+import com.hampusborg.monsterCharacter.Caragor;
 import com.hampusborg.playerCharacter.Wizard;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
@@ -12,12 +12,11 @@ public class Main {
 
         GameLogic gl = new GameLogic();
         Wizard wizard = new Wizard();
-        Balrog balrog = new Balrog();
-        Kraken kraken = new Kraken();
+        Ghúl balrog = new Ghúl();
+        Caragor kraken = new Caragor();
 
-        gl.Play();
-        gl.act();
 
+        gl.startGame();
 
 
 

@@ -1,10 +1,8 @@
 package com.hampusborg.gameLogic;
 
-
-import com.hampusborg.ColorScheme.IColors;
 import com.hampusborg.combat.AHero;
 import com.hampusborg.combat.AMonster;
-import com.hampusborg.monsterCharacter.Balrog;
+import com.hampusborg.monsterCharacter.*;
 import com.hampusborg.playerCharacter.Ranger;
 import com.hampusborg.playerCharacter.Warrior;
 import com.hampusborg.playerCharacter.Wizard;
@@ -15,104 +13,134 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-import static jdk.internal.org.jline.utils.Status.getStatus;
+public class GameLogic {
+    private int floor;
+    private Scanner scanner = new Scanner(System.in);
+    private List<AMonster> monsters;
+    private List<AHero> playerList;
+    private Shop shop;
 
-public class GameLogic implements IColors {
-    private Scanner sc = new Scanner(System.in);
-
-    private List<AMonster> monsterList = new ArrayList<>();
-    List<AHero> playerList = new ArrayList<>();
-    List<Loot> shopItems = new ArrayList<>();
-    private Random r = new Random();
-    Shop shop = new Shop();
-    String name;
-    Wizard wizard = new Wizard();
-    Warrior warrior = new Warrior();
-    Ranger ranger = new Ranger();
-
-
-
-    public GameLogic() throws InterruptedException {
-
-
+    public GameLogic() {
+        this.floor = 1;
+        this.monsters = new ArrayList<>();
+        this.playerList = new ArrayList<>();
+        this.shop = new Shop();
     }
 
-    private void addPlayer() {
-       boolean isChoosing = true;
+    public void startGame(int numberOfPlayers) throws InterruptedException {
+        createPlayers(numberOfPlayers);
+        startFloor();
+    }
+
+    private void createPlayers(int numberOfPlayers) {
+        for (int i = 1; i <= numberOfPlayers; i++) {
+            System.out.println("Player " + i + ", choose your class:");
+            AHero player = playerClass();
+            playerList.add(player);
+        }
+    }
+
+    private AHero playerClass() {
+        AHero player = null;
+        boolean validInput = false;
+
         do {
-            System.out.println("Choose a hero: 1 - Ranger, 2 - Wizard, 3 - Warrior, 4 - Start the adventure of a lifetime");
-            int choice = sc.nextInt();
+            System.out.println("1. Ranger\n2. Warrior\n3. Wizard");
 
-            switch (choice) {
-                case 1 -> playerList.add(new Ranger());
-                case 2 -> playerList.add(new Wizard());
-                case 3 -> playerList.add(new Warrior());
-                case 4 -> isChoosing = false;
-                default -> System.out.println("Wrong input, please choose another Hero or finish your selection.");
+            int choice;
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+                switch (choice) {
+                    case 1 -> player = new Ranger();
+                    case 2 -> player = new Warrior();
+                    case 3 -> player = new Wizard();
+                    default -> System.out.println("Invalid input, please try again");
+                }
+                if (player != null) validInput = true;
+            } else {
+                System.out.println("Invalid input. Please enter a correct number");
+                scanner.next();
             }
-        } while (isChoosing);
+        } while (!validInput);
+
+        return player;
     }
-        public void startGame ( int numberOfPlayers){
-            for (int i = 0; i < numberOfPlayers; i++) {
+
+    private void startFloor() throws InterruptedException {
+        while (!monsters.isEmpty() && !playerList.isEmpty()) {
+            for (AHero player : playerList) {
+                playerAction(player);
             }
-
-            int floor = 1;
-            int maxFloors = 10;
-            while (floor <= maxFloors) {
-                int numberOfMonsters = r.nextInt(5) + floor;
-
-                for (int i = 0; i < numberOfMonsters; i++) {
-                    monsterList.add(new Balrog());
-                }
-
-                System.out.println("This is floor " + floor + ":");
-                System.out.println("Number of monsters: " + numberOfMonsters);
-                System.out.println("Players in the game:");
-                for (AHero aHero : playerList) {
-                    System.out.println("Player name: " + aHero.getName() + ", Level: " + aHero.getLevel());
-                }
-
-                floor++;
-
-                monsterList.clear();
-            }
-        }
-
-        public void Play () throws InterruptedException {
-            boolean isPlaying = false;
-        }
-            public void act() throws InterruptedException {
-                do {
-                    System.out.println("You now have a choice to make, fight or flee.");
-                    System.out.println("1. Fight");
-                    System.out.println("2. Try to escape this madness");
-                    System.out.println("3. Overview of stats");
-                    System.out.println("Choose wisely");
-
-                    switch (sc.nextLine()) {
-                        case "1" -> wizard.attack();
-                        case "2" -> System.out.println(wizard.flee());
-                        case "3" -> System.out.println(wizard.getStatus());
-                        default -> System.out.println("Invalid input, try again");
-                    }
-                } while(!sc.hasNextInt());
-
+            if (playerWantsToShop()) {
                 shop.displayAvailableItems();
-
+                if (playerWantsToReturnToBattle()) {
+                    returnToBattle();
                 }
             }
+            floor++;
+        }
+    }
 
+    private void playerAction(AHero player) throws InterruptedException {
+        System.out.println("Player: " + player.getName() + "\nChoose what you want to do: ");
+        System.out.println("1. Attack\n2. Flee\n3. Get status\n4. Shop");
 
+        int choice = scanner.nextInt();
 
+        switch (choice) {
+            case 1 -> player.attack();
+            case 2 -> player.flee();
+            case 3 -> player.getStatus();
+            case 4 -> {
+                player.viewShop(shop);
+                System.out.println("Do you want to continue shopping? (1 for Yes, 0 for No)");
+                int continueShopping = scanner.nextInt();
+                if (continueShopping == 1) {
+                    System.out.println("Enter the item number you want to buy:");
+                    int selection = scanner.nextInt();
+                    shop.purchaseItem(player, selection);
+                }
+            }
+            default -> System.out.println("Invalid input, try again");
+        }
+    }
 
+    private boolean playerWantsToShop() {
+        System.out.println("Do you want to enter the shop? (1 for Yes, 0 for No)");
+        int choice = scanner.nextInt();
+        return choice == 1;
+    }
 
-            //for (int floor = 1; floor <= 10; floor++) {
-            //    System.out.println("Entering floor " + floor + ":");
-             //   for (AHero aHero : playerList) {
-             //       for (AMonster monster : monsterList) {
-             //           monster.takeDamage(aHero.attack());
-              //          aHero.takeDamage(monster.attack());
+    private boolean playerWantsToReturnToBattle() {
+        System.out.println("Do you want to return to battle? (1 for Yes, 0 for No)");
+        int choice = scanner.nextInt();
+        return choice == 1;
+    }
 
+    private void returnToBattle() throws InterruptedException {
+        System.out.println("Returning to battle!");
+        startFloor();
+    }
 
+    private int generateNumberOfMonsters() {
+        return new Random().nextInt(floor * 3) + 1;
+    }
 
+    private void generateMonsters(int numberOfMonsters) {
+        monsters.clear();
+        Random r = new Random();
+        for (int i = 0; i < numberOfMonsters; i++) {
+        }
+        int monsterType = r.nextInt(4);
+        AMonster monster = null;
+        switch (monsterType) {
+            case 1 -> monster = new Troll();
+            case 2 -> monster = new Uruk();
+            case 3 -> monster = new Caragor();
+            case 4 -> monster = new Ghúl();
+            default -> monster = new Orc();
 
+        }
+        monsters.add(monster);
+    }
+}

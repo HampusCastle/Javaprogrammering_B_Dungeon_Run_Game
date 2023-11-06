@@ -1,6 +1,7 @@
 package com.hampusborg.combat;
 
 import com.hampusborg.gameLogic.Loot;
+import com.hampusborg.gameLogic.Rarity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +12,8 @@ import java.util.Scanner;
 public abstract class AMonster extends ACharacter implements ICombat {
     String name;
     private int goldLoot;
-    private int playerLevel;
     List<Loot> itemLoot;
+    int playerLevel;
     List<String> loot;
     private Random r = new Random();
     private Scanner sc = new Scanner(System.in);
@@ -94,24 +95,39 @@ public abstract class AMonster extends ACharacter implements ICombat {
     public List<Loot> generateItemLoot() {
         List<Loot> lootDrops = new ArrayList<>();
 
+        int commonDrops = 50;
+        int uncommonDrops = 30;
+        int rareDrops = 15;
+        int epicDrops = 4;
+        int legendaryDrops = 1;
 
-        Loot.Rarity[] rarities = Loot.Rarity.values();
-        int dropRate = 70;
-        Loot.Rarity rarity = rarities[r.nextInt(rarities.length)];
-        if (r.nextInt(100) < dropRate) {
-            Loot loot = new Loot("Item Name", rarity, calculateLootPower(rarity, playerLevel));
-            lootDrops.add(loot);
+        Rarity[] rarities = Rarity.values();
+        Random r = new Random();
+
+        int dropChance = r.nextInt(100);
+        Rarity rarity;
+        if (dropChance < commonDrops) {
+            rarity = Rarity.COMMON;
+        } else if (dropChance < commonDrops + uncommonDrops) {
+            rarity = Rarity.UNCOMMON;
+        }else if (dropChance < commonDrops + uncommonDrops + rareDrops) {
+            rarity = Rarity.RARE;
+        }else if (dropChance < commonDrops + uncommonDrops + rareDrops + epicDrops){
+            rarity = Rarity.EPIC;
+        }else {
+            rarity = Rarity.LEGENDARY;
         }
+        int power = calculateLootPower(rarity, playerLevel);
+        Rarity rarity = rarities[r.nextInt(rarities.length)];
+        Loot loot = new Loot("Item Name", rarity, power);
+        lootDrops.add(loot);
         return lootDrops;
-}
+        }
 
-    private int calculateLootPower(Loot.Rarity rarity, int playerLevel) {
-
+    private int calculateLootPower(Rarity rarity, int playerLevel) {
         return playerLevel * rarityMultiplier(rarity);
     }
-
-    private int rarityMultiplier(Loot.Rarity rarity) {
-        // Define the multiplier based on rarity
+    private int rarityMultiplier(Rarity rarity) {
         switch (rarity) {
             case COMMON:
                 return 1;
@@ -133,11 +149,8 @@ public abstract class AMonster extends ACharacter implements ICombat {
 public int takeDamage(int damageReceived) {
     this.health -= damageReceived;
     return damageReceived;
-}
-    public boolean isDefeated() {
-        return this.getHealth() <= 0;
-    }
-}
+} }
+
 
 
 

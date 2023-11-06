@@ -2,9 +2,12 @@ package com.hampusborg.gameLogic;
 
 public class Loot {
     private String name;
-    private String rarity;
-    private int power;
-    public Loot(String name, Rarity rarity, int power) {
+    private Rarity rarity;
+    private int itemPower;
+    public Loot(String name, Rarity rarity, int itemPower) {
+    this.name = name;
+    this.rarity = rarity;
+    this.itemPower = itemPower;
 
 
     }
@@ -13,32 +16,25 @@ public class Loot {
             this.name = name;
         }
 
-        public void setRarity(String rarity) {
-            this.rarity = rarity;
-        }
-
         public void setPower(int power) {
-            this.power = power;
+            this.itemPower = itemPower;
         }
 
         public String getName() {
             return name;
         }
 
-        public String getRarity() {
+        public Rarity getRarity() {
             return rarity;
         }
 
-        public int getPower() {
-            return power;
+        public int getItemPower() {
+            return itemPower;
         }
-    public enum Rarity {
-        COMMON,
-        UNCOMMON,
-        RARE,
-        EPIC,
-       LEGENDARY,
+
+public void usedLoot (){
+
     }
 
-
 }
+

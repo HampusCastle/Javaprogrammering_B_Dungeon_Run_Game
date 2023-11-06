@@ -1,10 +1,11 @@
 package com.hampusborg.shop;
 
-public class Cloaks extends AItem{
-    public Cloaks(String name, int power) {
-        super(name, power);
-    }
+import com.hampusborg.gameLogic.Rarity;
 
+public class Cloaks extends AItem{
+    public Cloaks(String name, int power, Rarity rarity) {
+        super(name, power, rarity);
+    }
     public void LorienCloak() {}
     public void GaladrielCloak() {}
     public void TravelingCloak() {}
